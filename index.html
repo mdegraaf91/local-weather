@@ -99,7 +99,7 @@ $(document).ready(function(){
 	  navigator.geolocation.getCurrentPosition(function(position) {
 	    var lat = position.coords.latitude;
 	    var lon = position.coords.longitude;
-	    $.getJSON("http://api.openweathermap.org/data/2.5/weather?lat="+lat+"&lon="+lon+"&appid=cac13a4c595495b9284110890c602b56", function(data){
+	    $.getJSON("https://cors-anywhere.herokuapp.com/http://api.openweathermap.org/data/2.5/weather?lat="+lat+"&lon="+lon+"&appid=cac13a4c595495b9284110890c602b56", function(data){
 	    	console.log(data);
 	    	var fahrenheit = Math.ceil(data.main.temp * 9/5 - 459.67);
 	    	var celsius = Math.ceil((fahrenheit - 32) / (9/5));
