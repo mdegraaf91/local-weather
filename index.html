@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<head>
+<title>Local Weather</title>
+<link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,700" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/weather-icons/2.0.9/css/weather-icons.css" rel="stylesheet">
+<style>
+*, *:before, *:after {
+  -webkit-box-sizing: border-box; 
+  -moz-box-sizing: border-box; 
+  box-sizing: border-box;
+}
+body{
+	font-family: 'Roboto', sans-serif;
+	color: #fff;
+	background-color: #f2f2f2;
+}
+span{
+	display: block;
+}
+ul{
+	list-style-type: none;
+	text-align: left;
+	padding-left: 15px;
+}
+ul li{
+	margin-bottom: 25px;
+}
+.container {
+    width: 400px;
+    height: 300px;
+    background-color: #1791a2;
+    border-radius: 7px;
+    margin: 10% auto 0;
+}
+.col-5{
+	float: left;
+	width: 50%;
+	height: 170px;
+	text-align: center;
+	padding: 20px;
+	border-top: 1px solid rgba(255,255,255,0.3);
+}
+#location{
+	font-size: 23px;
+	text-align: left;
+	padding-left: 13px;
+}
+#weather #main{
+	font-size: 20px;
+}
+#icon{
+	font-size: 100px;
+}
+#temperature{
+	font-size: 90px;
+	line-height: 80px;
+	font-weight: 300;
+	cursor: pointer;
+}
+#temperatureF{
+	display: none;	
+}
+#weathertype{
+	text-align: left;
+	padding-left: 13px;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+	<div class="col-5">
+		<div id="icon"></div>
+	</div>
+	<div class="col-5">
+		<ul>
+			<li class="humidity"></li>
+			<li class="wind"></li>
+			<li class="pressure"></li>
+		</ul>
+	</div>
+	<div class="col-5">
+		<div id="temperature">
+			<span id="temperatureF" onclick="convertF();"></span>
+			<span id="temperatureC" onclick="convertC();"></span>
+		</div>
+	</div>
+	<div class="col-5">
+		<span id="location"></span>
+		<span id="weathertype"></span>
+	</div>
+	
+</div>
+
+<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+<script>
+$(document).ready(function(){
+	if (navigator.geolocation) {
+	  navigator.geolocation.getCurrentPosition(function(position) {
+	    var lat = position.coords.latitude;
+	    var lon = position.coords.longitude;
+	    $.getJSON("http://api.openweathermap.org/data/2.5/weather?lat="+lat+"&lon="+lon+"&appid=cac13a4c595495b9284110890c602b56", function(data){
+	    	console.log(data);
+	    	var fahrenheit = Math.ceil(data.main.temp * 9/5 - 459.67);
+	    	var celsius = Math.ceil((fahrenheit - 32) / (9/5));
+	    	var weatherType = data.weather[0].main;
+	    	var weatherID = data.weather[0].id;
+	    	var weatherHum = data.main.humidity;
+	    	var weatherPress = data.main.pressure;
+	    	var windSpeed = data.wind.speed;
+			
+			$('#icon').html("<i class='wi wi-owm-"+weatherID+"'></i>");
+	    	$('#location').html(data.name + ', ' + data.sys.country);
+	    	$('#temperatureF').html(fahrenheit + '&deg;F');
+	    	$('#temperatureC').html(celsius + '&deg;C');
+	    	$('#weathertype').html(weatherType);
+	    	$('.humidity').html('Humidity: ' + weatherHum + '%');
+	    	$('.wind').html('Wind: ' + windSpeed + 'km/h');
+	    	$('.pressure').html('Pressure: ' + weatherPress + ' hpa');
+		});
+	  });
+	} // end if navigator
+});
+function convertF(){
+	document.getElementById('temperatureF').style.cssText = "display: none;";
+	document.getElementById('temperatureC').style.cssText = "display: block;";
+}
+function convertC(){
+	document.getElementById('temperatureF').style.cssText = "display: block;";
+	document.getElementById('temperatureC').style.cssText = "display: none;";
+}
+</script>
+</body>
+</html>
